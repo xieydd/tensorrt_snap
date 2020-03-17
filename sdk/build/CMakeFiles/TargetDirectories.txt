@@ -1,0 +1,3 @@
+/tmp/snap_tensorrt/tensorrt_snap/sdk/build/CMakeFiles/edit_cache.dir
+/tmp/snap_tensorrt/tensorrt_snap/sdk/build/CMakeFiles/rebuild_cache.dir
+/tmp/snap_tensorrt/tensorrt_snap/sdk/build/CMakeFiles/test_trt.dir

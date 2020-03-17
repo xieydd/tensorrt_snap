@@ -1,0 +1,40 @@
+cmake_minimum_required(VERSION 3.5)
+add_definitions(-std=c++11)
+
+
+find_package(CUDA REQUIRED)
+include_directories("${CUDA_INCLUDE_DIRS}")
+
+set(CUDA_TOOLKIT_ROOT_DIR /usr/local/cuda)
+set(TENSORRT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../TensorRT-7.0.0.11/include)
+set(TENSORRT_ROOT /${CMAKE_CURRENT_SOURCE_DIR}/../TensorRT-7.0.0.11)
+
+# TensorRT
+find_path(TENSORRT_INCLUDE_DIR NvInfer.h
+  HINTS ${TENSORRT_ROOT} ${CUDA_TOOLKIT_ROOT_DIR}
+  PATH_SUFFIXES include)
+MESSAGE(STATUS "Found TensorRT headers at ${TENSORRT_INCLUDE_DIR}")
+find_library(TENSORRT_LIBRARY_INFER nvinfer
+  HINTS ${TENSORRT_ROOT} ${TENSORRT_BUILD} ${CUDA_TOOLKIT_ROOT_DIR}
+  PATH_SUFFIXES lib lib64 lib/x64)
+find_library(TENSORRT_LIBRARY_INFER_PLUGIN nvinfer_plugin
+  HINTS  ${TENSORRT_ROOT} ${TENSORRT_BUILD} ${CUDA_TOOLKIT_ROOT_DIR}
+  PATH_SUFFIXES lib lib64 lib/x64)
+if(WIN32)
+  find_library(TENSORRT_LIBRARY_MYELIN myelin64_1
+    HINTS  ${TENSORRT_ROOT} ${TENSORRT_BUILD} ${CUDA_TOOLKIT_ROOT_DIR}
+    PATH_SUFFIXES lib lib64 lib/x64)
+else()
+  find_library(TENSORRT_LIBRARY_MYELIN myelin
+    HINTS  ${TENSORRT_ROOT} ${TENSORRT_BUILD} ${CUDA_TOOLKIT_ROOT_DIR}
+    PATH_SUFFIXES lib lib64 lib/x64)
+endif()
+set(TENSORRT_LIBRARY ${TENSORRT_LIBRARY_INFER} ${TENSORRT_LIBRARY_INFER_PLUGIN} ${TENSORRT_LIBRARY_MYELIN})
+MESSAGE(STATUS "Find TensorRT libs at ${TENSORRT_LIBRARY}")
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${TENSORRT_INCLUDE_DIR})
+set(model_SRC model.cpp)
+add_library(TRTEngine SHARED ${model_SRC})
+target_link_libraries(TRTEngine ${TENSORRT_LIBRARY})
+target_include_directories(TRTEngine PUBLIC ${CUDA_INCLUDE_DIR} ${TENSORRT_INCLUDE_DIR})

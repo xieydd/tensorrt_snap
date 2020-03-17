@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++11  -rdynamic CMakeFiles/test_trt.dir/test.cpp.o  -o test_trt  -L/tmp/snap_tensorrt/tensorrt_snap/sdk/lib -Wl,-rpath,/tmp/snap_tensorrt/tensorrt_snap/sdk/lib -lTRTEngine -lopencv_highgui -lopencv_video -lopencv_imgproc -lopencv_core -lopencv_videoio -lopencv_imgcodecs 
